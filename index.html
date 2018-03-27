@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+        <script src="js/three.js"></script>
+        <script src="js/OrbitControls.js"></script>
+        <script src="js/stats.min.js"></script>
+		<script>
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera(75, (window.innerWidth-5)/(window.innerHeight-5), 0.1, 1000);
+            var controls = new THREE.OrbitControls( camera );
+            var listener = new THREE.AudioListener();
+
+            var stats = new Stats();
+            stats.showPanel(1);
+            document.body.appendChild(stats.dom);
+
+            camera.add(listener);
+            controls.minDistance = 2;
+            controls.maxDistance = 19
+
+            var sound = new THREE.PositionalAudio(listener);
+
+            var audioLoader = new THREE.AudioLoader();
+            audioLoader.load('./kamini.mp3', function(buffer){
+                sound.setBuffer(buffer);
+                sound.setRefDistance(0.05);
+                sound.play();
+                sound.setLoop(true);
+	            sound.setVolume(0.5);
+            });
+
+            var renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth-5, window.innerHeight-5);
+			document.body.appendChild(renderer.domElement);
+
+            //sky
+            var geometry = new THREE.SphereGeometry(20, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
+            var texture = new THREE.TextureLoader().load('stars.jpg');
+            var material = new THREE.MeshBasicMaterial({ map: texture });
+            var sky = new THREE.Mesh(geometry,material);
+            scene.add(sky)
+
+            //sun
+            geometry = new THREE.SphereGeometry(1.2, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
+            texture = new THREE.TextureLoader().load('sun.jpg');
+            material = new THREE.MeshBasicMaterial({ map: texture });
+            var sun = new THREE.Mesh(geometry, material);
+            scene.add(sun);
+
+            //mercury
+            geometry = new THREE.SphereGeometry(0.1, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
+            texture = new THREE.TextureLoader().load('mercury.jpg');
+            material = new THREE.MeshBasicMaterial({ map: texture });
+            var mercury = new THREE.Mesh(geometry, material);
+            scene.add(mercury);
+            mercury.position.x = 2;
+
+            //venus
+            geometry = new THREE.SphereGeometry(0.2, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
+            texture = new THREE.TextureLoader().load('venus.jpg');
+            material = new THREE.MeshBasicMaterial({ map: texture });
+            var venus = new THREE.Mesh(geometry, material);
+            scene.add(venus);
+            venus.position.x = 2.5;
+
+            //earth
+            geometry = new THREE.SphereGeometry(0.2, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
+            texture = new THREE.TextureLoader().load('earth.jpg');
+            material = new THREE.MeshBasicMaterial({ map: texture });
+            var earth = new THREE.Mesh(geometry, material);
+            scene.add(earth);
+            earth.position.x = 3;
+            earth.add(sound)
+
+            //mars
+            geometry = new THREE.SphereGeometry(0.2, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
+            texture = new THREE.TextureLoader().load('mars.jpg');
+            material = new THREE.MeshBasicMaterial({ map: texture });
+            var mars = new THREE.Mesh(geometry, material);
+            scene.add(mars);
+            mars.position.x = 5;
+
+            //jupiter
+            geometry = new THREE.SphereGeometry(0.5, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
+            texture = new THREE.TextureLoader().load('jupiter.jpg');
+            material = new THREE.MeshBasicMaterial({ map: texture });
+            var jupiter = new THREE.Mesh(geometry, material);
+            scene.add(jupiter);
+            jupiter.position.x = 7;
+
+            //saturn
+            geometry = new THREE.SphereGeometry(0.35, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
+            texture = new THREE.TextureLoader().load('saturn.jpg');
+            material = new THREE.MeshBasicMaterial({ map: texture });
+            var saturn = new THREE.Mesh(geometry, material);
+            scene.add(saturn);
+            saturn.position.x = 9;
+
+            //saturn ring
+            geometry = new THREE.RingGeometry(0.4, 0.6, 50);
+            texture = new THREE.TextureLoader().load('rings.jpg');
+            material = new THREE.MeshBasicMaterial({ map: texture });
+            var saturnRing = new THREE.Mesh(geometry, material);
+            scene.add(saturnRing);
+            saturnRing.position.x = 9;
+            saturnRing.rotation.x = 45
+
+            //uranus
+            geometry = new THREE.SphereGeometry(0.2, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
+            texture = new THREE.TextureLoader().load('uranus.jpg');
+            material = new THREE.MeshBasicMaterial({ map: texture });
+            var uranus = new THREE.Mesh(geometry, material);
+            scene.add(uranus);
+            uranus.position.x = 11;
+
+            //neptune
+            geometry = new THREE.SphereGeometry(0.2, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
+            texture = new THREE.TextureLoader().load('neptune.jpg');
+            material = new THREE.MeshBasicMaterial({ map: texture });
+            var neptune = new THREE.Mesh(geometry, material);
+            scene.add(neptune);
+            neptune.position.x = 12;
+
+            //camera angle
+            camera.position.z = 15;
+            camera.position.y = 3;
+            camera.rotation.x = -0.3
+            controls.update();
+
+            var angleEarth = 90
+            var angleMercury = 240
+            var angleVenus = 180
+            var angleMars = 45
+            var angleJupiter = 90
+            var angleSaturn = 0
+            var angleUranus = 270
+            var angleNeptune = 100
+            var angleSaturnRing = 0
+
+            var animate = function () {
+                stats.begin();
+                angleMercury = animatePlanet(mercury, angleMercury, 0.0025, 2)
+                angleVenus = animatePlanet(venus, angleVenus, 0.005, 2.5)
+                angleEarth = animatePlanet(earth, angleEarth, 0.008, 3)
+                angleMars = animatePlanet(mars, angleMars, 0.002, 5)
+                angleJupiter = animatePlanet(jupiter, angleJupiter, 0.006, 7)
+                angleSaturn = animatePlanet(saturn, angleSaturn, 0.003, 9)
+                angleSaturnRing = animatePlanet(saturnRing, angleSaturnRing, 0.003, 9)
+                angleUranus = animatePlanet(uranus, angleUranus, 0.009, 11)
+                angleNeptune = animatePlanet(neptune, angleNeptune, 0.004, 12)
+                //rotation
+                sun.rotation.y -= 0.005
+                venus.rotation.y += 0.05
+                mercury.rotation.y += 0.05
+                earth.rotation.y += 0.05
+                mars.rotation.y += 0.05
+                jupiter.rotation.y += 0.05
+                saturn.rotation.y += 0.05
+                saturnRing.rotation.z += 0.05
+                uranus.rotation.y += 0.05
+                neptune.rotation.y += 0.05
+                //----
+                stats.end();
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            };
+
+            function animatePlanet(planet, angle, multi, rayon){
+                angle+=multi
+                planet.position.x = getX(rayon, angle)
+                planet.position.z = getZ(rayon, angle)
+                return angle
+            }
+
+            function getX(rayon, angle){
+                return Math.cos(angle)*rayon
+            }
+
+            function getZ(rayon, angle){
+                return Math.sin(angle)*rayon
+            }
+			animate();
+		</script>
+	</body>
+</html>
